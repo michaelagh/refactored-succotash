@@ -8,7 +8,6 @@ def hexColor(color):
     b = hex2dec(color[5:7])
     return (r, g, b)
 
-
 def platno(width, height, color):
     obr = Image.new('RGB', (width, height), color)
     return obr
@@ -21,13 +20,13 @@ def filled_circle(im, S, r, color):
     right_down = (S[0] + r, S[1] + r)
     draw.ellipse([left_up, right_down], fill=color)
 
-sunset_colors = ["#FFEB99", "#FFD170", "#FFB84D", "#FFAA3E", "#F99B72", "#F28A8B", "#E37F9E", "#D86F94", "#D15F8C", "#B9446E"]
+sunset_colors = ["#FFEB99", "#FFD170", "#FFB84D","#FFAA3E", "#F99B72", "#F28A8B","#E37F9E", "#D86F94", "#D15F8C", "#B9446E"]
 
 def filled_rectangle(im, x1, x2, y1, y2, color):
     for x in range(x1, x2):
         for y in range(y1, y2):
-            im.putpixel((x, y), color)
-    return im
+            obr.putpixel((x, y), color)
+    return obr
 
 def line1(im, A, B, color, thickness):
     draw = ImageDraw.Draw(im)
@@ -132,9 +131,9 @@ def circle(im, S, r, color, thickness):
             im.putpixel((-x + S[0], y + S[1]), color)
 
 def thick_line(im, A, B, thickness, color):
-    pixels = linePixels(A, B)
-    for X in pixels:
-        filled_circle(im, X, int(thickness)/2, color)
+  pixels = linePixels(A, B)
+  for X in pixels:
+    filled_circle(im, X, int(thickness)/2, color)
 
 def simulate_protanopia(im):
     for y in range(im.height):
@@ -164,78 +163,90 @@ def invert_colors(im):
 def blur_image(im):
     return im.filter(ImageFilter.GaussianBlur(radius=5))
 
-def generate_image_from_ves_code(file_name):
-    with open(file_name, 'r') as f:
-        obr = None
-        for line in f:
-            line = line.strip()
-            parts = line.split()
 
-            if parts[0] == "VES":
-                width = int(parts[2])
-                height = int(parts[3])
-                color = parts[4]
-                rgb_color = hexColor(color)
-                obr = platno(width, height, rgb_color)
+with open("ves_code.txt", 'r') as f:
+    obr = None
+    for line in f:
+        line = line.strip()
+        parts = line.split()
 
-            if parts[0] == "FILL_CIRCLEX":
-                S = (int(parts[1]), int(parts[2]))
-                r = int(parts[3])
-                times = int(parts[4])
-                color_keyword = parts[5]
-                if color_keyword == "SUNSET":
-                    colors = sunset_colors
-                for i in range(times):
-                    prvy_r = r - i * 15
-                    if prvy_r > 0:
-                        color = colors[i]
-                        rgb_color = hexColor(color)
-                        filled_circle(obr, S, prvy_r, rgb_color)
+        if parts[0] == "VES":
+            width = int(parts[2])
+            height = int(parts[3])
+            color = parts[4]
+            rgb_color = hexColor(color)
+            obr = platno(width, height, rgb_color)
 
-            if parts[0] == "FILL_RECTANGLE":
-                x1 = int(parts[1])
-                x2 = int(parts[2])
-                y1 = int(parts[3])
-                y2 = int(parts[4])
-                color = parts[5]
-                rgb_color = hexColor(color)
-                obr = filled_rectangle(obr, x1, x2, y1, y2, rgb_color)
+        if parts[0] == "FILL_CIRCLEX":
+            S = (int(parts[1]), int(parts[2]))
+            r = int(parts[3])
+            times = int(parts[4])
+            color_keyword = parts[5]
+            if color_keyword == "SUNSET":
+                colors = sunset_colors
+            for i in range(times):
+                prvy_r = r - i * 15
+                if prvy_r > 0:
+                    color = colors[i]
+                    rgb_color = hexColor(color)
+                    filled_circle(obr, S, prvy_r, rgb_color)
 
-            if parts[0] == "FILL_CIRCLE":
-                S = (int(parts[1]), int(parts[2]))
-                r = int(parts[3])
-                color = parts[4]
-                rgb_color = hexColor(color)
-                filled_circle(obr, S, r, rgb_color)
+        if parts[0] == "FILL_RECTANGLE":
+            x1 = int(parts[1])
+            x2 = int(parts[2])
+            y1 = int(parts[3])
+            y2 = int(parts[4])
+            color = parts[5]
+            rgb_color = hexColor(color)
+            obr = filled_rectangle(obr, x1, x2, y1, y2, rgb_color)
 
-            if parts[0] == "LINE":
-                A = (int(parts[1]), int(parts[3]))
-                B = (int(parts[2]), int(parts[4]))
-                color = parts[6]
-                rgb_color = hexColor(color)
-                thickness = int(parts[5])
-                line1(obr, A, B, rgb_color, thickness)
+        if parts[0] == "FILL_CIRCLE":
+            S = (int(parts[1]), int(parts[2]))
+            r = int(parts[3])
+            color = parts[4]
+            rgb_color = hexColor(color)
+            filled_circle(obr, S, r, rgb_color)
 
-            if parts[0] == "TRIANGLE":
-                A = (int(parts[1]), int(parts[2]))
-                B = (int(parts[3]), int(parts[4]))
-                C = (int(parts[5]), int(parts[6]))
-                color = parts[7]
-                rgb_color = hexColor(color)
-                triangle(obr, A, B, C, rgb_color)
+        if parts[0] == "LINE":
+            A = (int(parts[1]), int(parts[3]))
+            B = (int(parts[2]), int(parts[4]))
+            color = parts[6]
+            rgb_color = hexColor(color)
+            thickness = int(parts[5])
+            line1(obr, A, B, rgb_color, thickness)
 
-            if parts[0] == "GREYSCALE":
-                obr = greyscale(obr)
+        if parts[0] == "FILL_TRIANGLE":
+            A = (int(parts[1]), int(parts[2]))
+            B = (int(parts[3]), int(parts[4]))
+            C = (int(parts[5]), int(parts[6]))
+            color = parts[7]
+            rgb_color = hexColor(color)
+            triangle(obr, A, B, C, rgb_color)
 
-            if parts[0] == "COLORBLIND":
-                obr = simulate_protanopia(obr)
+        if parts[0] == "CIRCLE":
+            farba = hexColor(parts[5])
+            S = [int(parts[1]), int(parts[2])]
+            r = int(parts[3])
+            thickness = int(parts[4])
+            circle(obr, S, r, farba, thickness)
 
-            if parts[0] == "INVERTED":
-                obr = invert_colors(obr)
+        if parts[0] == "TRIANGLE":
+          color = parts[8]
+          rgb_color = hexColor(color)
+          thickness = parts[7]
+          thick_line(obr, (int(parts[1]), int(parts[2])), (int(parts[3]), int(parts[4])), thickness, color)
+          thick_line(obr, (int(parts[1]), int(parts[2])), (int(parts[5]), int(parts[6])), thickness, color)
+          thick_line(obr, (int(parts[3]), int(parts[4])), (int(parts[5]), int(parts[6])), thickness, color)
 
-            if parts[0] == "BLUR":
-                obr = blur_image(obr)
-    return obr
+        if parts[0] == "GREYSCALE":
+            obr = greyscale(obr)
 
-obr = generate_image_from_ves_code("ves_code.txt")
-obr.show()
+        if parts[0] == "COLORBLIND":
+            obr = simulate_protanopia(obr)
+
+        if parts[0] == "INVERTED":
+            obr = invert_colors(obr)
+
+        if parts[0] == "BLUR":
+            obr = blur_image(obr)
+obr
