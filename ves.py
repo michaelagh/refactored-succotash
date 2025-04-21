@@ -7,6 +7,11 @@ def hexColor(color):
     g = hex2dec(color[3:5])
     b = hex2dec(color[5:7])
     return (r, g, b)
+    
+def hex2dec(hex_str):
+    if not hex_str:  
+        raise ValueError("Prázdny reťazec nie je platná hex farba")
+    return int(hex_str, 16)
 
 def platno(width, height, color):
     obr = Image.new('RGB', (width, height), color)
