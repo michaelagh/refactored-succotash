@@ -253,5 +253,3 @@ def generate_image_from_ves_code(ves_code_filename):
     return obr  
 
 
-generated_image = generate_image_from_ves_code("ves_code.txt")
-generated_image.show() 
