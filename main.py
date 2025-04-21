@@ -1,9 +1,10 @@
+import os
 from flask import Flask, render_template, jsonify, request
 from ves import generate_image_from_ves_code, blur_image, invert_colors, greyscale, simulate_protanopia
 import io
 import base64
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='views') 
 
 @app.route('/')
 def index():
@@ -36,9 +37,5 @@ def render():
     return jsonify({"image": img_base64}) 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
-if __name__ == '__main__':
-    import os
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get('PORT', 10000))  
+    app.run(host='0.0.0.0', port=port, debug=True)  
