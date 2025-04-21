@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <title>VES Render</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="desktop">
+      <div class="div">
+        <div class="header">
+          <div class="gear-shape"></div>
+          <p class="VES-RENDER">
+            <span class="text-bold">VES</span><br /><span class="text-light">RENDER</span>
+          </p>
+        </div>
+
+        <!-- FORM START -->
+        <form id="ves-form" action="/render" method="POST">
+          <div class="rectangle-left">
+            <textarea name="ves" class="text-area" placeholder="Sem zadajte text..."></textarea>
+          </div>
+
+          <input type="hidden" name="width" value="500" /> <!-- Príklad, môžeš upraviť -->
+
+          <div class="rectangle-center">
+            <img class="center-image" id="rendered-image" src="" alt="Render Image" />
+          </div>
+
+          <div class="text-wrapper-2">Vyberte si filter:</div>
+
+          <!-- Filter buttons - môžu neskôr meniť triedu / JS state -->
+          <button type="button" class="filter-button" style="top: 190px"> <span>ORIGINAL</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" style="top: 250px"> <span>BLUR</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" style="top: 310px"> <span>INVERTED</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" style="top: 370px"> <span>GREYSCALE</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" style="top: 430px"> <span>COLORBLIND</span><div class="arrow"></div> </button>
+
+          <div class="ves-label">Sem vlož VES kód:</div>
+
+          <button type="submit" class="render-btn">
+            <span>RENDER</span>
+            <div class="arrow"></div>
+          </button>
+        </form>
+        <!-- FORM END -->
+
+        <p class="footer">© Project by Michaela, Ondrej, Pavol</p>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('ves-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Zastaví klasické odoslanie
+
+        const form = e.target;
+        const vesCode = form.querySelector('.text-area').value;
+        const width = form.querySelector('input[name="width"]').value;
+
+        const response = await fetch('/render', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ves: vesCode, width: width })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const img = document.getElementById('rendered-image');
+          img.src = 'data:image/png;base64,' + data.image;
+        } else {
+          console.error('Chyba pri renderovaní');
+        }
+      });
+    </script>
+  </body>
+</html>
