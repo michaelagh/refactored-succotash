@@ -17,12 +17,12 @@
         </div>
 
         <!-- FORM START -->
-        <form id="ves-form" action="/render" method="POST">
+        <form id="ves-form">
           <div class="rectangle-left">
             <textarea name="ves" class="text-area" placeholder="Sem zadajte text..."></textarea>
           </div>
 
-          <input type="hidden" name="width" value="500" /> <!-- Príklad, môžeš upraviť -->
+          <input type="hidden" name="width" value="500" />
 
           <div class="rectangle-center">
             <img class="center-image" id="rendered-image" src="" alt="Render Image" />
@@ -30,12 +30,12 @@
 
           <div class="text-wrapper-2">Vyberte si filter:</div>
 
-          <!-- Filter buttons - môžu neskôr meniť triedu / JS state -->
-          <button type="button" class="filter-button" style="top: 190px"> <span>ORIGINAL</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" style="top: 250px"> <span>BLUR</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" style="top: 310px"> <span>INVERTED</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" style="top: 370px"> <span>GREYSCALE</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" style="top: 430px"> <span>COLORBLIND</span><div class="arrow"></div> </button>
+
+          <button type="button" class="filter-button" data-filter="ORIGINAL" style="top: 190px"> <span>ORIGINAL</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" data-filter="BLUR" style="top: 250px"> <span>BLUR</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" data-filter="INVERTED" style="top: 310px"> <span>INVERTED</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" data-filter="GREYSCALE" style="top: 370px"> <span>GREYSCALE</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" data-filter="COLORBLIND" style="top: 430px"> <span>COLORBLIND</span><div class="arrow"></div> </button>
 
           <div class="ves-label">Sem vlož VES kód:</div>
 
@@ -44,7 +44,7 @@
             <div class="arrow"></div>
           </button>
         </form>
-        <!-- FORM END -->
+
 
         <p class="footer">© Project by Michaela, Ondrej, Pavol</p>
       </div>
@@ -52,7 +52,7 @@
 
     <script>
       document.getElementById('ves-form').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Zastaví klasické odoslanie
+        e.preventDefault();
 
         const form = e.target;
         const vesCode = form.querySelector('.text-area').value;
@@ -69,7 +69,7 @@
           const img = document.getElementById('rendered-image');
           img.src = 'data:image/png;base64,' + data.image;
         } else {
-          console.error('Chyba pri renderovaní');
+          alert('Chyba pri renderovaní obrázka');
         }
       });
     </script>
