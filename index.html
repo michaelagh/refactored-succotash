@@ -16,7 +16,6 @@
           </p>
         </div>
 
-        <!-- FORM START -->
         <form id="ves-form">
           <div class="rectangle-left">
             <textarea name="ves" class="text-area" placeholder="Sem zadajte text..."></textarea>
@@ -30,12 +29,11 @@
 
           <div class="text-wrapper-2">Vyberte si filter:</div>
 
-
-          <button type="button" class="filter-button" data-filter="ORIGINAL" style="top: 190px"> <span>ORIGINAL</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" data-filter="BLUR" style="top: 250px"> <span>BLUR</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" data-filter="INVERTED" style="top: 310px"> <span>INVERTED</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" data-filter="GREYSCALE" style="top: 370px"> <span>GREYSCALE</span><div class="arrow"></div> </button>
-          <button type="button" class="filter-button" data-filter="COLORBLIND" style="top: 430px"> <span>COLORBLIND</span><div class="arrow"></div> </button>
+          <button type="button" class="filter-button" data-filter="ORIGINAL" style="top: 190px">ORIGINAL<div class="arrow"></div></button>
+          <button type="button" class="filter-button" data-filter="BLUR" style="top: 250px">BLUR<div class="arrow"></div></button>
+          <button type="button" class="filter-button" data-filter="INVERTED" style="top: 310px">INVERTED<div class="arrow"></div></button>
+          <button type="button" class="filter-button" data-filter="GREYSCALE" style="top: 370px">GREYSCALE<div class="arrow"></div></button>
+          <button type="button" class="filter-button" data-filter="COLORBLIND" style="top: 430px">COLORBLIND<div class="arrow"></div></button>
 
           <div class="ves-label">Sem vlož VES kód:</div>
 
@@ -45,15 +43,23 @@
           </button>
         </form>
 
-
         <p class="footer">© Project by Michaela, Ondrej, Pavol</p>
       </div>
     </div>
 
     <script>
+      let currentFilter = "ORIGINAL";
+
+      document.querySelectorAll(".filter-button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentFilter = btn.dataset.filter;
+          document.querySelectorAll(".filter-button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+
       document.getElementById('ves-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const form = e.target;
         const vesCode = form.querySelector('.text-area').value;
         const width = form.querySelector('input[name="width"]').value;
@@ -61,13 +67,12 @@
         const response = await fetch('/render', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ves: vesCode, width: width })
+          body: JSON.stringify({ ves: vesCode, width: width, filter: currentFilter })
         });
 
         if (response.ok) {
           const data = await response.json();
-          const img = document.getElementById('rendered-image');
-          img.src = 'data:image/png;base64,' + data.image;
+          document.getElementById('rendered-image').src = 'data:image/png;base64,' + data.image;
         } else {
           alert('Chyba pri renderovaní obrázka');
         }
